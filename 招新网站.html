@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="zh-CN"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的主页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 原有样式保持不变 */
+        /* 背景填色 */
+        body {
+            background-color: antiquewhite;
+            margin: 0; 
+            font-family: sans-serif; 
+            padding-top: 70px; /* 给固定导航栏留出空间 */
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background-color: rgba(255, 165, 0, 0.85); 
+            padding: 0 30px; /* 增加左右内边距 */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed; /* 固定在顶部 */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(5px); /* 变透明 */
+        }
+
+        /* 导航列表 */
+        .nav-list {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            list-style: none;
+            width: 100%; /* 确保占满整个导航栏宽度 */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 导航项 */
+        .nav-item {
+            position: relative;
+            flex: 1; 
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* 居中对齐导航项内容 */
+            color: white;
+            text-decoration: none;
+            padding: 15px 10px; /* 调整内边距 */
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 8px 15px; /* 大幅增加外边距，扩大导航项间距 */
+            width: 100%; /* 让链接占满整个导航项 */
+        }
+
+        /* 图标样式 */
+        .nav-link i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        /* 悬停效果 - 颜色变化 */
+        .nav-link:hover {
+            background-color: rgba(235, 103, 8, 0.904); /* 悬停效果 */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+        }
+
+        /* 中间核心项特殊样式 */
+        .nav-item:nth-child(3) .nav-link {
+            background-color: rgba(255, 255, 255, 0);
+            font-weight: 600;
+        }
+
+        .nav-item:nth-child(3) .nav-link:hover {
+            background-color: rgba(255, 140, 0, 0.9); /* 悬停时也变为深橙色 */
+        }
+
+        /* 第一个选项选中状态 */
+        .nav-item:first-child .nav-link {
+            background-color: rgba(255, 165, 0, 0.85); /* 选中状态 */
+        }
+
+        .nav-item:first-child .nav-link:hover {
+            background-color: rgba(255, 99, 71, 0.9); /* 悬停时更深的红色 */
+        }
+
+        /* 下拉箭头样式 */
+        .dropdown-arrow {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+
+        /* 下拉菜单样式 */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgb(255, 255, 255);
+            border: 2px solid #FFA500;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1001;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        /* 悬停显示下拉菜单 */
+        .nav-item:first-child:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(5px);
+        }
+
+        /* 二维码图片样式 */
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* 下拉菜单文字样式 */
+        .dropdown-title {
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .dropdown-subtitle {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* 为图片容器添加一个类 */
+        .image-container {
+            text-align: center; 
+            position: relative; 
+        }
+        .main-image {
+            max-width: 100%; 
+            height: auto;    
+            display: block;   
+            margin: 0 auto;   
+        }
+
+        /*设置geek图标*/
+        .geek{
+            text-align: center;
+        }
+        .geek-image {
+            position: absolute;
+            text-align: center;
+            top: 15%;
+            left: 35%;
+            width: 30%;
+            /*悬停放大*/
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        .geek-image:hover {
+        transform: translateX(0%) scale(1.3);
+        }
+        /* Introduction 标题样式 */
+        .introduction-title {
+            text-align: center;
+            font-size: 48px;
+            color: #000080;
+            font-weight: bold;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* 下拉箭头样式 */
+        .title-dropdown {
+            font-size: 24px;
+            color: #000080;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .title-dropdown:hover {
+            transform: translateY(3px);
+        }
+
+        /* 装饰图 */
+        .first {
+            text-align: center;
+        }
+        
+        .zhuangshi {
+            position: absolute;
+            text-align: center;
+            top: 140%;
+            left: 0%;
+            width:100%;
+        }
+
+        /* 响应式设计 */
+        @media screen and (max-width: 768px) {
+            .navbar {
+                padding: 0 15px; /* 移动端减少内边距 */
+            }
+            
+            .nav-list {
+                flex-direction: column;
+                padding: 10px 0;
+            }
+            
+            .nav-item {
+                flex: none; /* 移动端取消flex分配 */
+                width: 100%;
+            }
+            
+            .nav-link {
+                width: 100%;
+                justify-content: center;
+                margin: 5px 10px; /* 移动端适当减少间距 */
+                padding: 12px 20px;
+            }
+            
+            .dropdown-menu {
+                left: 0;
+                transform: translateX(0);
+            }
+            
+            .nav-item:first-child:hover .dropdown-menu {
+                transform: translateX(0) translateY(5px);
+            }
+            
+            .geek-image {
+                width: 50%;
+                max-width: 200px;
+            }
+
+            /* Introduction 响应式 */
+            .introduction-title {
+                font-size: 32px;
+            }
+
+            .left-decoration, .right-decoration {
+                display: none; /* 移动端隐藏装饰 */
+            }
+        }
+
+        /* 中等屏幕尺寸调整 */
+        @media screen and (max-width: 1200px) and (min-width: 769px) {
+            .nav-link {
+                margin: 6px 10px; /* 中等屏幕适当减少间距 */
+                padding: 15px 8px;
+            }
+
+            .introduction-title {
+                font-size: 40px;
+            }
+        }
+
+        /* 超大屏幕尺寸调整 */
+        @media screen and (min-width: 1400px) {
+            .navbar {
+                padding: 0 50px; /* 超大屏幕增加内边距 */
+            }
+            
+            .nav-link {
+                margin: 10px 25px; /* 超大屏幕进一步增加间距 */
+                padding: 15px 15px;
+            }
+
+            .introduction-title {
+                font-size: 56px;
+            }
+        }
+        /* 内容区域 */
+        .developer-section {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+            transition: transform 0.3s ease; /* 悬停动画 */
+        }
+
+        /* 内容卡片 */
+        .content-card {
+            background-color: white;
+            border: 2px solid #DDDDDD;
+            border-radius: 15px;
+            padding: 40px;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease; /* 内容卡片悬停动画 */
+        }
+
+        /* 内容卡片悬停放大效果 */
+        .content-card:hover {
+            transform: scale(1.03);
+        }
+
+        /* 左侧文字内容 */
+        .text-content {
+            flex: 3;
+        }
+
+        /* 主标题 */
+        .main-title {
+            font-size: 32px;
+            color: #000000;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* 引言 */
+        .english-quote {
+            font-size: 20px;
+            color: #4A90E2;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .english1-quote {
+            font-size: 20px;
+            color: #c14ae2;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .english2-quote {
+            font-size: 20px;
+            color: #22e3c3;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .english3-quote {
+            font-size: 20px;
+            color: #e37922;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+
+        /* 正文段落 */
+        .content-paragraph {
+            font-size: 16px;
+            color: #333333;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* 右侧图片 */
+        .image-content {
+            flex: 2;
+            text-align: center;
+        }
+
+        .character-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            
+        }
+
+        /* 角色图片悬停放大效果 */
+       @keyframes  donghua {
+            0%,100%{transform: scale(1) rotate(0deg);}
+           25%{transform: scale(1)rotate(1.2deg);}
+           75%{transform: scale(1)rotate(-1.2deg);}
+       }
+        .character-image:hover {
+            animation: donghua 0.6s 1;
+        }
+/* About US 部分样式 */
+        .about-section {
+            background-color: #F8F6F0; /* 浅米色背景 */
+            padding: 80px 20px;
+            margin-top: 50px;
+            transition: transform 0.3s ease; /* About US部分悬停动画 */
+        }
+
+        /* About US部分悬停放大效果 */
+        .about-section:hover {
+            transform: scale(1.01);
+        }
+
+        /* About US 标题样式 */
+        .about-title {
+            text-align: center;
+            font-size: 36px;
+            color: #666666;
+            font-weight: bold;
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* 卡片容器 */
+        .about-cards {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        /* 单个卡片样式 */
+        .about-card {
+            flex: 1;
+            background-color: white;
+            border: 2px solid #9B59B6; /* 紫色边框 */
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease; /* 卡片悬停动画 */
+            position: relative;
+            overflow: hidden;
+        }
+        /* 卡片悬停效果 */
+        .about-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(155, 89, 182, 0.3); /* 紫色阴影 */
+        }
+
+        
+        
+
+        /* 卡片标题样式 */
+        .card-title {
+            font-size: 20px;
+            color: #444444;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* 卡片描述样式 */
+        .card-description {
+            font-size: 14px;
+            color: #555555;
+            line-height: 1.6;
+        }
+
+        /* 蝴蝶装饰 */
+        .butterfly-decoration {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            opacity: 0.8;
+            transition: all 0.3s ease; /* 蝴蝶悬停动画 */
+        }
+
+        /* 蝴蝶悬停效果 */
+        .butterfly-decoration:hover {
+            transform: scale(1.2) rotate(15deg);
+            opacity: 1;
+        }
+
+       .speech{
+        width: 100px;
+       }
+       .diversity{
+        width: 100px;
+       }
+       .time{
+         width: 100px;
+       }
+       .hudie{
+        position: absolute;
+            text-align: center;
+            top: 510%;
+            left: 88%;
+            width: 10%;
+       }
+       /* 绿色框容器  */
+        .contact-box {
+            border: 2px solid #4a9e85; 
+            border-radius: 8px; 
+            padding: 35px 40px; 
+            max-width: 850px; 
+            margin: 30px auto; 
+            background-color: #fff;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+
+        /* 标题 */
+        .contact-title {
+            font-size: 36px; /* 标题放大 */
+            color: #333;
+            margin: 0 0 30px 0; /* 增大底部间距 */
+            display: flex;
+            align-items: center;
+            gap: 12px; /* 增大图标与文字间距 */
+            justify-content: center;
+        }
+        
+        .contact-title i.fa-phone {
+            font-size: 32px; 
+        }
+
+        /* 要求列表 */
+        .requirement-list {
+            color: #333;
+            font-size: 18px; 
+            line-height: 2.4; 
+            margin: 0 0 30px 0; 
+            padding-left: 30px; 
+        }
+
+        /* PS说明文字*/
+        .ps-text {
+            color: #666;
+            font-size: 16px; 
+            line-height: 1.8; 
+            margin: 0 0 35px 0; 
+        }
+
+        /* 绿色按钮 */
+        .btn-group {
+            display: flex;
+            gap: 20px; /* 增大按钮间距 */
+            justify-content: center;
+            width: 100%;
+        }
+        .contact-btn {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 6px; 
+            padding: 12px 26px; 
+            font-size: 18px; /* 按钮文字放大 */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* 按钮内图标与文字间距增大 */
+            transition: background-color 0.3s;
+        }
+        .contact-btn:hover {
+            background-color: #3d8b40;
+        }
+        .contact-btn i {
+            font-size: 20px; /* 按钮图标放大 */
+        }
+        
+        /* 复制成功提示 */
+        .copy-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .copy-toast.show {
+            opacity: 1;
+        }
+        
+        /* 装饰*/
+        .xiyi{
+             position: absolute;
+            text-align: center;
+            top: 575%;
+            left: 65%;
+            width: 20%;
+        }
+        .bug{
+            position: absolute;
+            text-align: center;
+            top: 585%;
+            left: 17%;
+            width: 5%
+        }
+        .tree{
+            position: absolute;
+            text-align: center;
+            top: 530%;
+            left: 13%;
+            width: 18%
+        }
+        .shu{
+            position:absolute;
+            text-align: center;
+            top: 530%;
+            left: 83%;
+            width: 12%
+        }
+        .yezi{
+            position: absolute;
+            text-align: center;
+            top: 535%;
+            left: 35%;
+            width: 5%;
+        }
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Arial", "Microsoft Yahei", sans-serif;
+        }
+
+        body {
+            padding: 20px;
+            background-color: #f0f7ff;
+        }
+
+        /* 主容器 */
+        .container {
+            width: 800px;
+            margin: 0 auto;
+            border: 2px solid #94b8ff;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background-color: #fff;
+        }
+
+        /* 标题 */
+        .header {
+            background-color: #e6eeff;
+            padding: 30px 20px;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            text-align: center;
+            color: #2c56b1;
+        }
+
+        /* 内容区 */
+        .content {
+            background-color: #f0f7ff;
+            background-image: url(background_QA.png);
+            background-size: cover;
+            background-position: center;
+            padding: 40px 60px;
+        }
+
+        /* 问题列表 */
+        .content ol {
+            list-style-type: decimal;
+            margin-left: 20px;
+        }
+
+        .content li {
+            font-size: 1.1em;
+            color: #000;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        /* 悬停效果 - 问题放大 */
+        .content li:hover {
+            font-size: 1.3em;
+            background-color: rgba(255, 255, 255, 0.8);
+            transform: scale(1.02);
+            padding-bottom: 20px;
+        }
+
+        /* 隐藏的回答内容 */
+        .answer {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e6eeff;
+            border-radius: 6px;
+            font-size: 0.9em;
+            color: #333;
+            line-height: 1.7;
+            border-left: 4px solid #6ca0ff;
+        }
+
+        /* 悬停时显示回答 */
+        .content li:hover .answer {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* 回答淡入动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 返回顶部按钮样式 */
+        .back-to-top {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #FFA500;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1002; /* 确保在其他元素上方 */
+        }
+
+        .back-to-top:hover {
+            background-color: #FF8C00;
+            transform: scale(1.1);
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+       
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="#introduction" class="nav-link">
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    Introduction
+                </a>
+                <!-- 下拉菜单 -->
+                <div class="dropdown-menu">
+                    <img src="1qrcode_1699620268564.jpg" alt="2023届Geek招新群二维码" class="qr-code">
+                    <div class="dropdown-title">2023届Geek招新群</div>
+                    <p class="dropdown-subtitle">扫码加入我们</p>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="#about" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    About US
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://campus.new-thread.com/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    NewThread
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#contact" class="nav-link">
+                    <i class="fas fa-phone"></i>
+                    Contact Us
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#qa" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    Q&A
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!--第一张背景图-->
+    <div class="image-container">
+        <img src="background_Homepage.png" alt="主页背景图片" class="main-image">
+        <!--geek图标放在背景图容器内-->
+        <div class="geek">
+            <img src="decoration_Geek.png" alt="Geek装饰图标" class="geek-image">
+        </div>
+    </div>
+
+    <!-- Introduction 部分 -->
+    <section id="introduction">
+        <!-- 标题 -->
+        <h1 class="introduction-title">
+            Introduction
+            <span class="title-dropdown">▼</span>
+        </h1>
+    </section>
+
+    <!--装饰图-->
+    <div class="first">
+        <img src="decoration_Transition.png" alt="" class="zhuangshi">
+    </div>
+    <!-- 开发程序猿内容区域 -->
+    <section class="developer-section">
+        <div class="content-card">
+            <!-- 左侧文字内容 -->
+            <div class="text-content">
+                <h2 class="main-title">开发程序猿</h2>
+                <p class="english-quote">Stay Hungry, Stay Foolish</p>
+                
+                <p class="content-paragraph">
+                    <strong>前端</strong>：前端开发是创建Web或app视觉界面呈现给用户的过程通过HTML，CSS及JavaScript以及衍生出来的各种技术、框架、解决方案，实现互联网产品的用户界面交互。
+                <p class="content-paragraph">
+                    <strong>后端</strong>：通常也称服务器端开发。不对用户显示,负责处理前端的请求，进行逻辑处理和数据交互。 客户端: 移动应用开发是为了小型、无线计算设备编写软件的流程和程序的集合，例如智能手机或平板电脑。
+                
+            </div>
+            
+            <!-- 右侧图片 -->
+            <div class="image-content">
+                <img src="Geek_Programmer.png" alt="" class="character-image">
+            </div>
+        </div>
+    </section>
+    <!-- 产品经理内容区域 -->
+    <section class="developer-section">
+        <div class="content-card">
+            <!-- 左侧文字内容 -->
+            <div class="text-content">
+                <h2 class="main-title">产品经理</h2>
+                <p class="english1-quote">"好的软件的特征是,明明没用过，但总觉得用过似的。"</p>
+                
+                <p class="content-paragraph">PM是针对某一项或是某一类的产品进行规划和管理的人员。 PM需要拥有缜密的产品逻辑思维，研究用户心理，负责产品的整个生命周期。 PM参与产品的UI和交互设计，为设计和开发确定产品原型，能够将产品变得有个性,操作变得舒适简单、自由。 PM需要一定的文档能力和沟通能力，能够在团队合作的过程中跟各个角色进行有效沟通。
+                    
+                
+            </div>
+            
+            <!-- 右侧图片 -->
+            <div class="image-content">
+                <img src="Geek_PM.png" alt="" class="character-image">
+            </div>
+        </div>
+    </section>
+    <!-- 游戏开发内容区域 -->
+    <section class="developer-section">
+        <div class="content-card">
+            <!-- 左侧文字内容 -->
+            <div class="text-content">
+                <h2 class="main-title">游戏开发</h2>
+                <p class="english2-quote">"TECH OTAKUS SAVE THE WORLD"</p>
+                
+                <p class="content-paragraph">对游戏开发的热爱和追求，使我们相聚于此。 涉及计算机图形学的学习，我们使用物理模拟引擎Unity开发我们所追求的世界，一个故事，一个角色，在我们的世界里改变现实，创造新的可能，我们参与，我们改变，我们创造...
+                    
+                
+            </div>
+            
+            <!-- 右侧图片 -->
+            <div class="image-content">
+                <img src="Geek_Game.png" alt="" class="character-image">
+            </div>
+        </div>
+    </section>
+    <!-- 安全内容区域 -->
+    <section class="developer-section">
+        <div class="content-card">
+            <!-- 左侧文字内容 -->
+            <div class="text-content">
+                <h2 class="main-title">安全</h2>
+                <p class="english3-quote">"路漫漫其修远兮，非大毅力者不能"</p>
+                
+                <p class="content-paragraph">我们主要学习Web安全和二进制安全。在Web安全中我们将学习和实践Web漏洞挖掘技术，也将探索和讨论Web安全实践的方法。在二进制安全中我们专注于分析和防御与计算机程序、系统相关的威胁，同时实践漏洞分析和修补。耐心和钻研缺一不可。
+                
+            </div>
+            
+            <!-- 右侧图片 -->
+            <div class="image-content">
+                <img src="Geek_security.png" alt="" class="character-image">
+            </div>
+        </div>
+    </section>
+    <!-- About US 部分 -->
+    <section class="about-section" id="about">
+
+        <h2 class="about-title">
+            <i class="fas fa-users about-icon"></i>
+            About Us
+        </h2>
+        
+        <div class="about-cards">
+            <!-- Speech 卡片 -->
+            <div class="about-card speech-card">
+                <div class="card-icon-container">
+                    <div class="speech-icon">
+                        <div class="speech-dots">
+                            <img src="about_Speech1.png" alt=""class=speech>
+                            <div class="speech-dot"></div>
+                            <div class="speech-dot"></div>
+                        </div>
+                    </div>
+                </div>
+                    <h3 class="card-title">Speech</h3>
+                <p class="card-description">
+                    每周我们会举行一次技术例会，用来汇报我们的学习内容，供成员之间交流学习
+                </p>
+               
+            </div>
+            
+            <!-- Diversity 卡片 -->
+            <div class="about-card diversity-card">
+                <div class="card-icon-container">
+                    <div class="diversity-structure">
+                        <div class="diversity-center"></div>
+                        <div class="diversity-orbit"></div>
+                        <img src="about_Diversity1.png" alt=""class=diversity>
+                        <div class="diversity-orbit"></div>
+                        <div class="diversity-orbit"></div>
+                    </div>
+                </div>
+                <h3 class="card-title">Diversity</h3>
+                <p class="card-description">
+                    多元化是我们的特色。在这里，你可以拥有多种方向选择，前后端、安全、AI、产品/设计、游戏等。
+                </p>
+            </div>
+            
+            <!-- 30+ H 卡片 -->
+            <div class="about-card time-card">
+                <div class="card-icon-container">
+                    <div class="clock-icon">
+                        <div class="clock-center"></div>
+                        <div class="clock-hand clock-hour"></div>
+                        <img src="about_Time1.png" alt=""class=time>
+                        <div class="clock-hand clock-minute"></div>
+                        <div class="clock-dots">
+                            <div class="clock-dot"></div>
+                            <div class="clock-dot"></div>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="card-title">30+ H</h3>
+                <p class="card-description">
+                    耐心、毅力是我们必备的品质，每周我们会至少花30小时在实验室中。以保证技术的精进。
+                </p>
+            </div>
+        </div>
+        <div class="butterfly-decoration">
+            <i class="fas fa-butterfly" style="font-size: 60px; color: #F1C40F;"></i>
+        </div>
+    </section>
+    <div>
+        <img src="decoration_Butterfly.png" alt=""class=hudie>
+    </div>
+    <!--Contact Us-->
+    <div class="contact-box" id="contact">
+        <!-- 标题 -->
+        <h2 class="contact-title">
+            Contact Us 
+            <span><i class="fa fa-phone"></i></span>
+        </h2>
+
+        <!-- 要求 -->
+        <ul class="requirement-list">
+            <li>热爱计算机，具有geek精神，喜欢DIY，动手能力较强</li>
+            <li>有编程/算法/硬件基础为佳(有作品可附上)</li>
+            <li>有足够的空余时间，热爱思考，对事物有自己的见解</li>
+        </ul>
+
+        <!-- PS内容 -->
+        <p class="ps-text">
+            ps:非新思路统招只有通过发送邮件自我介绍后，收到邮件回执后才会被允许进群,在读学生,都可邮件到newthread_geek@outlook.com报名加入.(信中需备注个人基本信息以及意向方向,此招新活动为长期招新)
+        </p>
+
+        <!-- 按钮-->
+        <div class="btn-group">
+            <button class="contact-btn">
+                <i class="fa fa-bell"></i> QQ-Group
+            </button>
+            <button class="contact-btn" id="emailBtn">
+                <i class="fa fa-envelope"></i> E-mail
+            </button>
+            <button class="contact-btn" id="githubBtn">
+                <i class="fa fa-github"></i> Github
+            </button>
+        </div>
+    </div>
+    
+    <!-- 复制成功提示 -->
+    <div class="copy-toast" id="copyToast">已复制到剪贴板</div>
+    
+    <!--装饰-->
+    <div>
+        <img src="decoration2_Chameleon.png" alt=""class=xiyi>
+    </div>
+    <div>
+        <img src="decoration_Ladybug.png" alt=""class=bug>
+    </div>
+    <div>
+        <img src="decoration_TreeWithSometing.png" alt=""class=tree>
+    </div>
+    <div>
+        <img src="decoration_Tree.png" alt=""class=shu>
+    </div>
+    <div>
+        <img src="decoration_Leaves.png" alt=""class=yezi>
+    </div>
+    
+    <!-- Q&A部分 -->
+    <div class="container" id="qa">
+        <div class="header">
+            <h1>More Questions💬</h1>
+        </div>
+        <div class="content">
+            <ol>
+                <li>什么是Geek(极客)? Geek精神又是什么?
+                    <div class="answer">
+                       拥有好奇之心，改变之力，爱钻研，能折腾。
+                    </div>
+                </li>
+                <li>招新是安排在什么时间?
+                    <div class="answer">
+                        按照惯例，正式招新时间是在9月下旬~10月上旬，不过今年会有一些改动，笔试地 点一般在9号教学楼。 如果想要了解我们，可以加入我们的QQ群，招新具体的安排/变动会在招新群通知。
+                    </div>
+                </li>
+                <li>我们有考核吗? 考核流程是怎样的呀?
+                    <div class="answer">
+                      嗯...我们一共有一轮笔试和两轮面试。权衡技术、经验和学习能力，第一轮是一些视野性的题目，淘汰率并不高。第二轮单独面试， 根据你的笔试提出技术相关的问题、兴趣爱好、个人看法。最后一轮群面，首先问及时间分 配上的问题，其次也会向你提出各种奇怪的问题。这一轮中许多题目其实并不难，也无标准答案，重在考察同学们在压力下的逻辑思维。全部通过成为预备成员啦
+                    </div>
+                </li>
+                <li>考核是怎样的形式?
+                    <div class="answer">
+                        在考核期间每人会拥有一位'长者'带你入门，学习技术与知识，交流经验与想法。完成每周的新人任务后再进行一次考核筛选 后就可以成为Geek组正式成员啦！在考核期必须满足每周30个小时在实验室哦,所以考核期也不可以懈怠哦！
+                    </div>
+                </li>
+                <li>进入Geek组之后都有什么福利呢?
+                    <div class="answer">
+                        一对一的新人指引，每一个成员都有会一个mentor, 带你初入门槛，与你一同成长，组内管理较宽松,在尊重其他人的前提下可以尽情发挥自己的个性。 打破平淡，与同样疯狂的人把疯狂的idea实现，磨砺耐性、培养思维、成就梦想。Lab设备/网络资源充足，闲暇之余也有组织活动。更有许多的故事等你来听~
+                    </div>
+                </li>
+                <li>进入团队会影响我的日常学习吗?
+                    <div class="answer">
+                        你要知道大学是一个可以自由安排自己学习生活的地方。如果你想在上课之余充实自己、激励自己，最好的方法就是和比自己更优秀的人在一起。团队不缺优秀的 人，而我们也期待同样优秀的你，让我们一起前进！小组里也有不少保研, 考研的前辈们, 大部分都能找到一个平衡点, 而且团队的经历对你日后读研, 工作都大有裨益。
+                </li>
+                <li>老师以及学长学姐们的期望是什么?
+                    <div class="answer">
+                        我们希望你有很强的自学能力，同时关注新事物、新技术，喜欢挑战，逻辑性强，善于和各种文化的人合作.“每个人都可以做自己想做的事情，每个人的方向不一样。 如果你想做产品或有不错的 idea，那么就可以找志同道合的人一起合作。”
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <!--底部内容-->
+     <footer class="page-footer">
+    <p>[pretending this is true&#x1F4BB;]</p>
+    <p>Copyright&copy;2002-2025 itaweya.github.io All Right Reserved 备案号：1145141919810</p>
+  </footer>
+    
+    <!-- 返回顶部按钮 -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // 处理E-mail按钮点击事件 - 复制邮箱地址
+        document.getElementById('emailBtn').addEventListener('click', function() {
+            const email = 'newthread_geek@outlook.com';
+            navigator.clipboard.writeText(email).then(() => {
+                // 显示复制成功提示
+                const toast = document.getElementById('copyToast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            }).catch(err => {
+                console.error('无法复制内容: ', err);
+                alert('复制失败，请手动复制邮箱地址：' + email);
+            });
+        });
+        
+        // 处理GitHub按钮点击事件 - 跳转到指定链接
+        document.getElementById('githubBtn').addEventListener('click', function() {
+            window.open('https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click', '_blank');
+        });
+
+        // 平滑滚动功能实现
+        document.querySelectorAll('.nav-link[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault(); // 阻止默认跳转行为
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // 计算目标位置，考虑固定导航栏的高度
+                    const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                    // 执行平滑滚动
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 返回顶部按钮功能
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        // 监听滚动事件，控制按钮显示/隐藏
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) { // 当页面滚动超过300px时显示按钮
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+        
+        // 点击按钮返回顶部
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
